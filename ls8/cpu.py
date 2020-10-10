@@ -133,6 +133,8 @@ HLT = 0b00000001
 LDI = 0b10000010
 PRN = 0b01000111
 MUL = 0b10100010
+PUSH = 0b01000101
+POP = 0b01000110
 
 
 class CPU:
@@ -147,6 +149,14 @@ class CPU:
         self.registers[7] = 0xF4
 
         self.pc = 0
+
+        self.branchtable = {
+            HLT: self.hlt,
+            LDI: self.ldi,
+            PRN: self.prn,
+            PUSH: self.push,
+            POP: self.pop,
+        }
 
     def load(self):
         """Load a program into memory."""
@@ -209,7 +219,7 @@ class CPU:
     def run(self):
         """Run the CPU."""
         running = True
-        while running:
+        while self.running:
 
             IR = self.ram_read(self.pc)
             operand_a = self.ram_read(self.pc + 1)
@@ -223,11 +233,32 @@ class CPU:
             if is_alu_op:
                 self.alu(operand_a, operand_b)
 
-            if IR == HLT:
-                running = False
+            else:
+                self.branchtable[IR](operand_a, operand_b)
 
-            elif IR == LDI:
-                self.registers[operand_a] = operand_b
+    def hlt(self):
+        self.running = False
 
-            elif IR == PRN:
-                print(self.registers[operand_a])
+    def ldi(self, operand_a, operand_b):
+        self.registers[operand_a] = operand_b
+
+    def prn(self, operand_a):
+        print(self.registers[operand_a])
+
+    def push(self, operand_a, operand_b):
+        # decrement the SP
+        self.registers[7] -= 1
+        # get the value from the register
+        value = self.registers[operand_a]
+        #  put it on the stack at the SP
+        SP = self.registers[7]
+        self.ram_write[MAR, value]
+
+    def pop(self, operand_a, operand_b):
+        # get the value from the stack
+        SP = self.registers[7]
+        value = self.ram_read(SP)
+        # put the value into the register, indicated by operand_a
+        self.registers[operand_a] = value
+        # move the stack pointer up
+        self.registers[7] += 1
