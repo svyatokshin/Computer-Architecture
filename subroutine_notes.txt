@@ -1,0 +1,48 @@
+Subroutines
+- CALL and RET
+- aka function
+def my_func(a, b):
+    print(a, b)
+def my_func2():
+    my_func(1, 2)
+For other opcodes, we pass parameters by placing them after the command in the program
+Can we pass parameters to our subroutine by placing them after CALL?
+- CALL spec does not allow this
+- How to pass parameters from one function to another?
+- Could use the stack and memory addresses!
+- Could store params in registers before calling
+-- can't do nested subroutines
+def mult2print(our_num):
+    our_num += our_num
+    print(our_num)
+    return
+print(99)
+mult2print(10) <-- PC
+print(42)
+mult2print(15)
+mult2print(18)
+mult2print(30)
+sys.exit(1)
+CALL
+- in our project, uses registers to pass params to subroutine
+RET
+700: 0 
+699: 2
+698: 2
+697: 3
+696: 6
+695: 6             <-- SP
+694: 3  
+693: 6
+R0 = 6
+def add(x, y):
+    z = x + y
+    return z
+def mult(a, b):
+    z = a * b
+    x = add(a, b)
+    return z
+def main():
+    a = 2
+    c = mult(2, 3)
+    d = 42

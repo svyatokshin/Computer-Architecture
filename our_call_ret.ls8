@@ -1,0 +1,32 @@
+# tim!
+# 42
+# tim!
+# 99
+# save the address to jump to
+10000100 # SAVE                  
+0 # R0
+00001011  # address to jump to
+# save second subroutine address
+10000100 # SAVE                  
+1 # R0
+00010000  # address to jump to
+# call our subroutine to print tim
+01011001 # CALL         <---- PC
+0 # R0   
+# print 99
+# PRINT_NUM
+01000011  
+01100011 # 99
+# halt
+00000010
+# subroutine
+00000001  # PRINT_TIM   
+01011001 # CALL       
+1 # R0   
+00000001  # PRINT_TIM
+00011010 #RET   
+# subroutine 2
+# PRINT_NUM
+01000011  
+00101010  # the meaning of life
+00011010 #RET 
